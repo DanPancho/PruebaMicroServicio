@@ -2,6 +2,8 @@ package com.example.microservicioAPITest.model;
 
 import java.util.List;
 
+import com.example.microservicioAPITest.enums.PetStatusType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,9 +16,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "pet")
+@Table(name = "pet_table")
 @Getter
 @Setter
 public class Pet {
@@ -26,12 +30,15 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)  //(1 pet -> n category) 1 - n
+    @NotNull(message = "Category is required")
     private Category category;
 
     @Column(name = "name")
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 
     @Column(name = "photo_urls")
+    @NotNull(message = "Photo URLs cannot be null")
     private List<String> photoUrls;
 
     @ManyToMany  //(n pet -> n tag) n - n
@@ -43,6 +50,7 @@ public class Pet {
     private List<Tag> tags;
 
     @Column(name = "status")
-    private String status;
+    @NotNull(message = "Status cannot be blank")
+    private PetStatusType status;
 
 }

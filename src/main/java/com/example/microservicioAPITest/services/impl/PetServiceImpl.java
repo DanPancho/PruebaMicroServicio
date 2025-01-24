@@ -35,8 +35,10 @@ public class PetServiceImpl implements PetService {
     public Pet updatePet(long idPet, Pet petUpdate) {
 
         if(finByIdPet(idPet).isPresent()){
-            petRepository.save(petUpdate);
-            return petUpdate;
+            if(finByIdPet(idPet).get().getId() == idPet){
+                petRepository.save(petUpdate);
+                return petUpdate;
+            }
         }
         return null;
         

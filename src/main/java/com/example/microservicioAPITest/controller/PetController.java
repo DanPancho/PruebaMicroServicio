@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.microservicioAPITest.model.Pet;
 import com.example.microservicioAPITest.services.PetService;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,15 +33,16 @@ public  class PetController {
     private PetService petService;
 
     @PostMapping("/addPet")
-    public Map<String, Object> addPet(@RequestBody Pet pet) {
+    public Map<String, Object> addPet(@Valid @RequestBody Pet pet) {
         
         Boolean responseStatus = petService.addPet(pet);
         String message = responseStatus ? "Pet added successfully" : "Error adding pet";
 
         Map<String, Object> response =  new HashMap<>();
+        
 
-        response.put("success", responseStatus);
-        response.put("message", message);
+        response.put("code", responseStatus ? "200" : "405");
+        response.put("description", message);
 
         log.info("Response: {}" , response);
         
@@ -54,7 +56,9 @@ public  class PetController {
 
         Map<String, Object> response =  new HashMap<>();
 
-        response.put("success", responseStatus);
+
+        response.put("code", responseStatus ? "200" : "404");
+        response.put("description", responseStatus ? "successful operation" : "Pet not found");
         response.put("pets", pets);
 
         log.info("Response: {}" , response);
@@ -70,8 +74,9 @@ public  class PetController {
         
         Map<String, Object> response =  new HashMap<>();
 
-        response.put("success", responseStatus);
-        response.put("pets", responseStatus ? pet.get() : "Pet not found");
+        response.put("code", responseStatus ? "200" : "404");
+        response.put("description", responseStatus ? "successful operation" : "Pet not found");
+        response.put("pets", responseStatus ? pet.get() : "");
 
         log.info("Response: {}" , response);
 
@@ -79,7 +84,7 @@ public  class PetController {
     }
 
     @PutMapping("/updatePet/{id}")
-    public Map<String, Object> updatePet(@PathVariable("id") long id, @RequestBody Pet pet) {
+    public Map<String, Object> updatePet(@PathVariable("id") long id, @Valid @RequestBody Pet pet) {
 
         Pet petUpdated = petService.updatePet(id, pet);
 
@@ -87,7 +92,8 @@ public  class PetController {
 
         Map<String, Object> response =  new HashMap<>();
 
-        response.put("success", responseStatus);
+        response.put("code", responseStatus ? "200" : "404");
+        response.put("description", responseStatus ? "successful operation" : "Pet not found");
         response.put("pets", responseStatus ? petUpdated : "Pet not found");
         
         return response;
@@ -100,8 +106,8 @@ public  class PetController {
 
         Map<String, Object> response =  new HashMap<>();
 
-        response.put("success", responseStatus);
-        response.put("message", message);
+        response.put("code", responseStatus ? "200" : "404");
+        response.put("description", message);
 
         log.info("Response: {}" , response);
         
